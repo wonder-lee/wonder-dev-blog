@@ -3,17 +3,31 @@ import PostCard from "../components/postCard";
 
 export default function Home({ posts }: any) {
   return (
-    <div>
-      <h1 className="mt-24 mb-12 font-bold text-3xl">Latest Posts</h1>
-      {posts.map((post: any) => (
-        <PostCard
-          key={post.slug}
-          title={post.data.title}
-          date={post.data.date}
-          description={post.data.description}
-          slug={post.slug}
-        />
-      ))}
+    <div className="max-w-prose prose px-4">
+      <table className="inline-table w-full">
+        <thead className="text-slate-700 text-left">
+          <tr>
+            <th>no</th>
+            <th>title</th>
+            <th>tag</th>
+            <th>date</th>
+          </tr>
+        </thead>
+        <tbody className="text-slate-500">
+          {posts.reverse().map((post: any, index: number) => (
+            <PostCard
+              key={post.slug}
+              title={post.data.title}
+              date={post.data.date}
+              tag={post.data.tag}
+              description={post.data.description}
+              slug={post.slug}
+              index={index}
+              length={posts.length}
+            />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

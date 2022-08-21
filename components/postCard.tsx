@@ -1,16 +1,15 @@
 import Link from "next/link";
 
-function PostCard({ title, date, description, slug }: any) {
+function PostCard({ title, date, tag, slug, index, length }: any) {
   return (
-    <div className="my-4 py-4 border-b">
-      <h2 className="font-bold text-2xl my-4">{title}</h2>
-      <time className="text-gray-400">{date}</time>
-      <p className="mt-4 italic">{description}</p>
-
-      <Link href="/[slug]" as={`/${slug}`}>
-        <a className="text-blue-500 mt-4 mb-2 block">Read more</a>
-      </Link>
-    </div>
+    <Link href="/[slug]" as={`/${slug}`}>
+      <tr className="text-sm hover:cursor-pointer hover:bg-slate-50">
+        <td>{length - index}</td>
+        <td>{title}</td>
+        <td>{tag}</td>
+        <td>{date}</td>
+      </tr>
+    </Link>
   );
 }
 

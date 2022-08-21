@@ -5,13 +5,17 @@ import { serialize } from "next-mdx-remote/serialize";
 
 function Post({ data, content }: any) {
   return (
-    <div>
-      <h1 className="font-bold text-7xl mt-24 mb-12">{data.title}</h1>
-      <time className="text-gray-500 italic">{data.date}</time>
-      <div className="prose mt-12">
+    <>
+      <div className="px-4">
+        <time className="text-gray-400">{data.date}</time>
+        <h3 className="font-bold dark:text-slate-200 md:text-3xl pt-3">
+          {data.title}
+        </h3>
+      </div>
+      <div className="prose my-8 px-4 text-sm">
         <MDXRemote {...content} />
       </div>
-    </div>
+    </>
   );
 }
 
