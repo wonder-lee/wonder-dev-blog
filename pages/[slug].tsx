@@ -7,8 +7,8 @@ function Post({ data, content }: any) {
   return (
     <>
       <div className="px-4">
-        <time className="text-gray-400">{data.date}</time>
-        <h3 className="font-bold dark:text-slate-200 md:text-3xl pt-3">
+        <time className="text-slate-400">{data.date}</time>
+        <h3 className="font-bold dark:text-slate-200 text-2xl pt-3">
           {data.title}
         </h3>
       </div>

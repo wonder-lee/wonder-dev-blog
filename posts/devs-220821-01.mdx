@@ -21,46 +21,50 @@ wonder blog 개설 작업 중 next + typescript + tailwind + mdx를 적용한 �
 
 ### `Next.js` 와 `Typescript` 를 설치합니다.
 
-```bash
+```
 npx create-next-app --typescript
+
 ```
 
-- `Next.js` 는 무엇입니다.
-- `Typescript` 는 무엇입니다.
+- `Next.js` 는 CSR뿐만 아니라 SSR 방식으로 검색 Engine이 meta tag를 수집하며 SEO에 더 유리한 react framework입니다.
+- `Typescript` 는 javascrpit에 type을 부여한 javascript의 확장된 언어입니다.
 
 ### `Tailwind` 를 설치합니다.
 
-```bash
+```
 npm install -D tailwindcss postcss autoprefixer
 
 npx tailwindcss init -p
+
 ```
 
-- `Tailwind` 는 무엇입니다.
+- `Tailwind` 는 utility-first(미리 setting된 class를 활용하요 html code내에서 styling) CSS framework입니다.
 - `tailwind.config.js` > `content` 영역 설정을 수정합니다.
-  ```bash
+  ```
   content: [
       "./pages/**/*.{js,ts,jsx,tsx}",
       "./components/**/*.{js,ts,jsx,tsx}",
   ],
+
   ```
 - `styles` > `globals.css` 에서 tailwind 변수를 추가합니다.
-  ```css
+  ```
   @tailwind base;
   @tailwind components;
   @tailwind utilities;
+
   ```
 
 ### `Gray-matter` 를 설치합니다.
 
-```bash
+```
 npm i gray-matter
+
 ```
 
-- `gray-matter` 는 무엇입니다.
+- `gray-matter` 는 md file을 불러올 때 string의 data를 object형식으로 convert해주는 library입니다.
 - posts folder를 생성하고 하위에 sample mdx file도 생성합니다. 이 때 아래처럼 title, date, description의 `meta data`도 추가합니다.
-
-  ```jsx
+  ```
   // posts/sample.mdx
   ---
   title: Functions for Beginners
@@ -78,11 +82,12 @@ npm i gray-matter
   ### This is a Markdown subheading
 
   We just used a `###` subheading in our blog post.
+
   ```
 
 ### mdx file list를 load할 함수를 생성합니다.
 
-```jsx
+```
 // utils/getPosts.ts
 
 import fs from "fs";
@@ -108,13 +113,14 @@ const getPosts = () => {
 };
 
 export default getPosts;
+
 ```
 
 - 한 줄씩 설명을 해보자
 
 ### `index.tsx` file에 생성한 load함수를 추가합니다.
 
-```jsx
+```
 // pages/index.tsx
 
 import getPosts from "../utils/getPosts";
@@ -146,19 +152,21 @@ export const getStaticProps = () => {
     },
   };
 };
+
 ```
 
 ### `next-mdx-remote` 를 설치합니다.
 
-```bash
+```
 npm i next-mdx-remote
+
 ```
 
-- `next-mdx-remote` 는 무엇입니다.
+- `next-mdx-remote` 는 next.js project에서 MDX file을 getStaticProps 혹은 getServerSideProps로 load 해주는 library입니다.
 
 ### mdx file을 load할 함수를 생성합니다.
 
-```jsx
+```
 // utils/getPost.ts
 
 import fs from "fs";
@@ -175,11 +183,12 @@ const getPost = (slug: any) => {
 };
 
 export default getPost;
+
 ```
 
 ### `[slug].tsx` file을 생성하여 mdx file load 함수를 추가합니다.
 
-```jsx
+```
 // pages/[slug].tsx
 
 import { MDXRemote } from "next-mdx-remote";
@@ -220,6 +229,7 @@ export const getStaticProps = async ({ params }: any) => {
     },
   };
 };
+
 ```
 
 ---
@@ -230,15 +240,13 @@ export const getStaticProps = async ({ params }: any) => {
 
 - 원인 : ts 확장자명 file에서 jsx 문법을 사용할 때 발생하였다.
 - 해결 : 오류가 발생한 file의 확장자명을 tsx로 수정하면 해결된다.
-- 검색 키워드 : **`"Cannot find name" errors in React components`**
-  [Typescript - "Cannot find name" errors in React components](https://stackoverflow.com/questions/51158080/typescript-cannot-find-name-errors-in-react-components)
+- 검색 키워드 : **`"Cannot find name" errors in React components`**[Typescript - "Cannot find name" errors in React components](https://stackoverflow.com/questions/51158080/typescript-cannot-find-name-errors-in-react-components)
 
 ### `Warning: validateDOMNesting(...): <p> cannot appear as a descendant of <p>.`
 
 - 원인 : `[slug].tsx` file에서 `mdx` file의 html tag들을 모두 `p` tag에서 처리하고 있었다.
 - 해결 : `mdx` data를 감싸고 있던 `p` tag를 `div` tag로 수정하면 해결된다.
-- 검색 키워드 : `validateDOMNesting mdx`
-  [index.js:1 Warning: validateDOMNesting(...): cannot appear as a descendant of](https://stackoverflow.com/questions/64998116/index-js1-warning-validatedomnesting-ul-cannot-appear-as-a-descendant)
+- 검색 키워드 : `validateDOMNesting mdx`[index.js:1 Warning: validateDOMNesting(...): cannot appear as a descendant of](https://stackoverflow.com/questions/64998116/index-js1-warning-validatedomnesting-ul-cannot-appear-as-a-descendant)
 
 ---
 

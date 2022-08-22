@@ -1,7 +1,25 @@
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import getPosts from "../utils/getPosts";
 import PostCard from "../components/postCard";
 
 export default function Home({ posts }: any) {
+  const router = useRouter();
+  const [reprocessPosts, setReprocessPosts] = useState([]);
+
+  useEffect(() => {
+    const { tag } = router.query;
+
+    if (!!tag) {
+      const hasTagPosts = posts.filter((post: any) => {
+        return post.slug.indexOf(tag) > -1;
+      });
+      setReprocessPosts(hasTagPosts);
+    } else {
+      setReprocessPosts(posts);
+    }
+  }, [router]);
+
   return (
     <div className="max-w-prose prose px-4">
       <table className="inline-table w-full">
@@ -14,7 +32,7 @@ export default function Home({ posts }: any) {
           </tr>
         </thead>
         <tbody className="text-slate-500">
-          {posts.reverse().map((post: any, index: number) => (
+          {reprocessPosts.reverse().map((post: any, index: number) => (
             <PostCard
               key={post.slug}
               title={post.data.title}
@@ -23,7 +41,7 @@ export default function Home({ posts }: any) {
               description={post.data.description}
               slug={post.slug}
               index={index}
-              length={posts.length}
+              length={reprocessPosts.length}
             />
           ))}
         </tbody>
