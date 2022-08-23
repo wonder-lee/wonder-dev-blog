@@ -32,7 +32,7 @@ export default function Home({ posts }: any) {
           </tr>
         </thead>
         <tbody className="text-slate-500">
-          {reprocessPosts.reverse().map((post: any, index: number) => (
+          {reprocessPosts.map((post: any, index: number) => (
             <PostCard
               key={post.slug}
               title={post.data.title}

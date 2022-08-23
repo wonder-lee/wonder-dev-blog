@@ -1,0 +1,29 @@
+---
+title: validateDOMNesting(...) <p> cannot appear as a descendant of <p>.
+date: "2022.08.23"
+tag: "에러"
+---
+
+## 개요
+
+typescript error
+
+---
+
+## 예제
+
+`Warning: validateDOMNesting(...): <p> cannot appear as a descendant of <p>.`
+
+---
+
+## 내용
+
+- 원인 : [slug].tsx file에서 mdx file의 html tag들을 모두 p tag에서 처리하고 있었다.
+- 해결 : mdx data를 감싸고 있던 p tag를 div tag로 수정하면 해결된다.
+- 검색 키워드 : validateDOMNesting mdx
+
+---
+
+## 참고
+
+- https://stackoverflow.com/questions/64998116/index-js1-warning-validatedomnesting-ul-cannot-appear-as-a-descendant
