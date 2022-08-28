@@ -1,11 +1,16 @@
-import { MDXRemote } from "next-mdx-remote";
+import Head from "next/head";
 import getPost from "../utils/getPost";
 import getPosts from "../utils/getPosts";
+import { MDXRemote } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 
 function Post({ data, content }: any) {
   return (
     <>
+      <Head>
+        <meta name="description" content={data.desc} />
+        <title>{data.title}</title>
+      </Head>
       <div className="px-4">
         <time className="text-slate-400">{data.date}</time>
         <h3 className="font-bold dark:text-slate-200 text-2xl pt-3">
