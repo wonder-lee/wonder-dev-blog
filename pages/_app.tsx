@@ -17,7 +17,10 @@ function MyApp({ Component, pageProps }: AppProps) {
   ]);
 
   const onClickTagButton = (query: string) => {
-    !!query ? router.push({ query: { tag: query } }) : router.push("/");
+    console.log("query", query);
+    !!query
+      ? router.push({ pathname: "/", query: { tag: query } })
+      : router.push("/");
   };
 
   return (
