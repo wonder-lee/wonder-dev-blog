@@ -1,0 +1,73 @@
+---
+title: React Hooks 간략 정리
+date: "2022.09.06"
+tag: "개발"
+desc: hooks는 react v16.8에 새로 도입된 기능으로 함수형 component에서도 class형 component처럼 다양한 작업을 할 수 있게 도와주는 기능입니다.
+---
+## 개요
+
+hooks는 react v16.8에 새로 도입된 기능으로 함수형 component에서도 class형 component처럼 다양한 작업을 할 수 있게 도와주는 기능입니다.
+
+---
+
+## 예제
+
+예제 내용은 없습니다.
+
+---
+
+## 내용
+
+react hook은 functional component에서도 class component처럼 react 상태값과 여러 기능들을 사용할 수 있도록 도와주는 기능입니다. functional componet에서 어떤 값을 유지할 수 있도록 cash를 만들고, 이 cash 이용하고자 만든 여러개의 API를 react hook 함수라고 부릅니다.
+
+### 규칙
+
+**최상위 level에서만 호출이 가능합니다.** 
+
+- 반복문, 조건문, 중첩된 함수와 같이 일반적인 javascript 함수에서는 호출이 불가합니다.
+
+**함수 component에서만 사용이 가능합니다.** 
+
+- Custom Hook에서는 호출 가능
+
+**hook 함수명은 `use` 로 시작하게 명명합니다.**
+
+- Hook 규칙이 적용되는지를 파악할 수 있기 때문에 공홈에서도 권고하고 있습니다.
+
+**hook 순서에 따라 실행합니다.**
+
+- 한 컴포넌트에서 여러개의 hook이 사용되는 경우
+- hook은 위에서부터 아래로 순서에 맞게 동작한다.
+
+### hooks 종류
+
+`useState` → 상태관리
+
+`useEffect` → rendering 될 때, 특정 작업 수행
+
+- mount
+- 특정 값 update
+- cleanup 함수
+
+`useMemo` → 필요시에만 사용 → 성능 최적화
+
+`useCallback` → 함수 재사용 → 렌더링 성능 최적화
+
+`useRef` → 특정 DOM 선택, component 안에서 조회 및 수정 할 수 있는 변수를 관리
+
+`custom Hooks` → 위 제공되는 hooks처럼 특정 기능의 hook을 생성할 수 있습니다.
+
+---
+
+## 오류
+
+- 오류 내용은 없습니다.
+
+---
+
+## 참고
+
+- [React Hooks 소개](https://ko.reactjs.org/docs/hooks-intro.html)
+- [Using the Effect Hook](https://ko.reactjs.org/docs/hooks-effect.html)
+- [[번역] useEffect 완벽 가이드](https://www.rinae.dev/posts/a-complete-guide-to-useeffect-ko)
+- [React Hooks 총정리](https://velog.io/@goyou123/React-Hooks-%EC%B4%9D%EC%A0%95%EB%A6%AC#1-%EC%B5%9C%EC%83%81%EC%9C%84%EC%97%90%EC%84%9C%EB%A7%8C-hook%EC%9D%84-%ED%98%B8%EC%B6%9C)
