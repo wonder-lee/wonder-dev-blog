@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-function PostCard({ title, date, tag, slug, index, length }: any) {
+function PostList({ title, date, tag, slug, index, length }: any) {
   return (
     <Link href="/[slug]" as={`/${slug}`}>
       <tr className="text-sm hover:cursor-pointer hover:bg-slate-50">
@@ -13,4 +13,4 @@ function PostCard({ title, date, tag, slug, index, length }: any) {
   );
 }
 
-export default PostCard;
+export default PostList;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import getPosts from "../utils/getPosts";
-import PostCard from "../components/postCard";
+import PostList from "../components/postList";
 
 export default function Home({ posts }: any) {
   const router = useRouter();
@@ -33,7 +33,7 @@ export default function Home({ posts }: any) {
         </thead>
         <tbody className="text-slate-500">
           {reprocessPosts.map((post: any, index: number) => (
-            <PostCard
+            <PostList
               key={post.slug}
               title={post.data.title}
               date={post.data.date}
