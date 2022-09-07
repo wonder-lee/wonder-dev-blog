@@ -1,0 +1,118 @@
+---
+title: Sentry > Next.js project 적용하기
+date: "2022.09.08"
+tag: "개발"
+desc: Next.js project에 sentry 적용 과정의 글입니다.
+---
+## 개요
+
+Next.js project에 sentry 적용 과정의 글입니다.
+
+---
+
+## 예제
+
+예제 내용은 없습니다.
+
+---
+
+## 내용
+
+### 적용 과정
+
+1. `sentry` 에서 DNS 문자를 확인합니다.
+    - Sentry > Settings > Client Keys (DSN) > DSN 확인
+2. `Next.js` project에서 `sentry` 를 설치합니다. 
+    
+    ```bash
+    npm install --save @sentry/react @sentry/tracing
+    ```
+    
+3. `next.config.js` file에 `sentry` 설정을 추가합니다.
+    
+    ```tsx
+    // next.config.js
+    
+    const { withSentryConfig } = require('@sentry/nextjs');
+    
+    const NextConfig = {...};
+    const sentryWebpackPluginOptions = {
+      silent: true,
+    };
+    
+    module.exports = withSentryConfig(NextConfig, sentryWebpackPluginOptions);
+    ```
+    
+4. `app.tsx` file에 `Sentry.init()` 함수를 추가합니다.
+    
+    ```tsx
+    // app.tsx
+    import * as Sentry from '@sentry/nextjs';
+    
+    useEffect(() => {
+      const ENV_NAME = process.env.ENV_NAME;
+    
+      if (ENV_NAME === 'beta' || ENV_NAME === 'production') {
+        Sentry.init({
+          dsn: process.env.SENTRY_DSN,
+          tracesSampleRate: 1.0,
+          environment: ENV_NAME,
+        });
+      }
+    }, []);
+    ```
+    
+5. API 통신 error handler에 `Sentry.captureException()` 함수를 추가합니다.
+    
+    기존 project에서 reactQuery로 API 통신을 하기 때문에, reatQuery의 기본설정을 할 수 있는 `queryClient.ts` file에서 `onError` option에 `Sentry.captureException()` 함수를 추가하였습니다.
+    
+    ```tsx
+    // reactQuery/queryClient.ts
+    
+    import { errorMessageType } from '@/types/error/error';
+    import { QueryClient } from 'react-query';
+    import { AxiosError } from 'axios';
+    
+    import * as Sentry from '@sentry/nextjs';
+    
+    function queryErrorHandler(error: AxiosError<errorMessageType>): void {
+      Sentry.captureException(error);
+      alert(error.response?.data?.message);
+    }
+    
+    function generateQueryClient(): QueryClient {
+      return new QueryClient({
+        defaultOptions: {
+          queries: {
+            onError: queryErrorHandler,
+            staleTime: 600000, // 10 minutes
+            cacheTime: 900000, // 15 minutes
+            refetchOnMount: false,
+            refetchOnWindowFocus: false,
+            refetchOnReconnect: false,
+          },
+          mutations: {
+            onError: queryErrorHandler,
+          },
+        },
+      });
+    }
+    
+    const queryClient = generateQueryClient();
+    
+    export { generateQueryClient, queryClient };
+    ```
+    
+
+---
+
+## 오류
+
+오류 내용은 없습니다.
+
+---
+
+## 참고
+
+- [componentDidCatch 로 에러 잡아내기 / Sentry 연동](https://react.vlpt.us/basic/26-componentDidCatch-and-sentry.html)
+- [Sentry로 Error-logging 해보기](https://velog.io/@pyt4105/Sentry%EB%A1%9C-Error-logging-%ED%95%B4%EB%B3%B4%EA%B8%B0)
