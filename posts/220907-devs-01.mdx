@@ -15,96 +15,100 @@ redux와 redux toolkit으로 관리하는 api 함수들을 react query로 migrat
 
 redux + redux toolkit의 api 요청 logic
 
-```tsx
-// components/poi/poiContents.tsx
+<SyntaxHighlighterWrap language="typescript">
+  {`
+    // components/poi/poiContents.tsx
 
-const getPoiListData = async () => {
-	return await dispatch(getPoiList(queryString));
-}
-
-// api/poi/poi.ts
-
-const getPoiList = createAsyncThunk(
-  'spot/getPoiList',
-  async (queryString, { rejectWithValue }) => {
-    try {
-      const response = await axiosPoi.get(`/poi-list${queryString}`);
-      const processResponse = processPoiListData(response.data);
-      return processResponse;
-    } catch (error) {
-      errorCode = error.response.status;
-      handleErrorAlert('common', errorCode);
-      return rejectWithValue({ errorCode: errorCode });
+    const getPoiListData = async () => {
+      return await dispatch(getPoiList(queryString));
     }
-  },
-);
 
-// api/index.ts
+    // api/poi/poi.ts
 
-const createAxiosWithAuth = (originUrl, url) => {
-  const axiosService = axios.create({
-    baseURL: `${originUrl}/${url}`,
-    timeout: 180000,
-    headers: {
-      'Cache-Control': 'no-cache',
-      Pragma: 'no-cache',
-      'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/json; charset=utf-8',
-    },
-  });
+    const getPoiList = createAsyncThunk(
+      'spot/getPoiList',
+      async (queryString, { rejectWithValue }) => {
+        try {
+          const response = await axiosPoi.get(`+'`/poi-list${queryString}`'+`);
+          const processResponse = processPoiListData(response.data);
+          return processResponse;
+        } catch (error) {
+          errorCode = error.response.status;
+          handleErrorAlert('common', errorCode);
+          return rejectWithValue({ errorCode: errorCode });
+        }
+      },
+    );
 
-  return setInterceptors(axiosService, true);
-};
+    // api/index.ts
 
-export const axiosPoi = createAxiosWithAuth(ADMIN_URL, 'poi');
-```
+    const createAxiosWithAuth = (originUrl, url) => {
+      const axiosService = axios.create({
+        baseURL: `+'`${originUrl}/${url}`'+`,
+        timeout: 180000,
+        headers: {
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+      });
+
+      return setInterceptors(axiosService, true);
+    };
+
+    export const axiosPoi = createAxiosWithAuth(ADMIN_URL, 'poi');
+  `}
+</SyntaxHighlighterWrap>
 
 ### 변경 후
 
 react query의 api 요청 logic
 
-```tsx
-// components/poi/poiContents.tsx
-const { poiList, poiTotalCount, refetchGetPoiListData } = useGetPoiList(
-    placeId,
-    spotId,
-    page,
-    pageSize,
-    column,
-    order,
-  );
+<SyntaxHighlighterWrap language="typescript">
+  {`
+    // components/poi/poiContents.tsx
+    const { poiList, poiTotalCount, refetchGetPoiListData } = useGetPoiList(
+        placeId,
+        spotId,
+        page,
+        pageSize,
+        column,
+        order,
+      );
 
-// hooks/reactquery/poi/useGetPoi.ts
-const useGetPoiList = (placeId, spotId, page, pageSize, column, order) => {
-  const [poiList, setPoiList] = useState<Array<poiListType>>();
-  const [poiTotalCount, setPoiTotalCount] = useState<number>();
-	// data 재가공 logic
-  const reprocessPoiList = (poiList) => {...};
+    // hooks/reactquery/poi/useGetPoi.ts
+    const useGetPoiList = (placeId, spotId, page, pageSize, column, order) => {
+      const [poiList, setPoiList] = useState<Array<poiListType>>();
+      const [poiTotalCount, setPoiTotalCount] = useState<number>();
+      // data 재가공 logic
+      const reprocessPoiList = (poiList) => {...};
 
-  const { refetch: refetchGetPoiListData } = useQuery(
-    [queryKeys.poi.getPoiList, placeId, spotId, page, pageSize, column, order],
-    () => getPoiList(placeId, spotId, page, pageSize, column, order),
-    {
-      onSuccess: (data) => {
-        setPoiList(reprocessPoiList(data.content));
-        setPoiTotalCount(data.total_elements);
-      },
-      enabled: !!placeId && !!spotId,
-    },
-  );
+      const { refetch: refetchGetPoiListData } = useQuery(
+        [queryKeys.poi.getPoiList, placeId, spotId, page, pageSize, column, order],
+        () => getPoiList(placeId, spotId, page, pageSize, column, order),
+        {
+          onSuccess: (data) => {
+            setPoiList(reprocessPoiList(data.content));
+            setPoiTotalCount(data.total_elements);
+          },
+          enabled: !!placeId && !!spotId,
+        },
+      );
 
-  return { poiList, poiTotalCount, refetchGetPoiListData };
-};
+      return { poiList, poiTotalCount, refetchGetPoiListData };
+    };
 
-// api/services/poi/poi.ts
+    // api/services/poi/poi.ts
 
-const getPoiList = async (placeId, spotId, page, pageSize, column, order) => {
-  const { data } = await axiosPoi.get(
-    `?page=${page}&size=${pageSize}&column=${column}&order=${order}&place_id=${placeId}&spot_id=${spotId}`,
-  );
-  return data;
-};
-```
+    const getPoiList = async (placeId, spotId, page, pageSize, column, order) => {
+      const { data } = await axiosPoi.get(
+        `+'`?page=${page}&size=${pageSize}&column=${column}&order=${order}&place_id=${placeId}&spot_id=${spotId}`'+`,
+      );
+      return data;
+    };
+  `}
+</SyntaxHighlighterWrap>
 
 ---
 
@@ -149,33 +153,37 @@ const getPoiList = async (placeId, spotId, page, pageSize, column, order) => {
     
     component에서 해당 hook에서 필요한 data들을 상태값으로 생성합니다.
     
-    ```tsx
-    // hooks/reactquery/poi/useGetPoi.ts
-    const useGetPoiList = (placeId, spotId, page, pageSize, column, order) => {
-      const [poiList, setPoiList] = useState<Array<poiListType>>();
-      const [poiTotalCount, setPoiTotalCount] = useState<number>();
-    
-      return { poiList, poiTotalCount};
-    };
-    ```
+  <SyntaxHighlighterWrap language="typescript">
+    {`
+      // hooks/reactquery/poi/useGetPoi.ts
+      const useGetPoiList = (placeId, spotId, page, pageSize, column, order) => {
+        const [poiList, setPoiList] = useState<Array<poiListType>>();
+        const [poiTotalCount, setPoiTotalCount] = useState<number>();
+      
+        return { poiList, poiTotalCount};
+      };
+    `}
+  </SyntaxHighlighterWrap>
     
 **4. `useQuery` 를 생성합니다.**
     
-    ```tsx
-    // hooks/reactquery/poi/useGetPoi.ts
-    const useGetPoiList = (placeId, spotId, page, pageSize, column, order) => {
-      const [poiList, setPoiList] = useState<Array<poiListType>>();
-      const [poiTotalCount, setPoiTotalCount] = useState<number>();
-    
-      const { refetch: refetchGetPoiListData } = useQuery(
-    		queryKey,
-    		apiFunction,
-    		option
-      );
-    
-      return { poiList, poiTotalCount, refetchGetPoiListData };
-    };
-    ```
+  <SyntaxHighlighterWrap language="typescript">
+    {`
+      // hooks/reactquery/poi/useGetPoi.ts
+      const useGetPoiList = (placeId, spotId, page, pageSize, column, order) => {
+        const [poiList, setPoiList] = useState<Array<poiListType>>();
+        const [poiTotalCount, setPoiTotalCount] = useState<number>();
+      
+        const { refetch: refetchGetPoiListData } = useQuery(
+          queryKey,
+          apiFunction,
+          option
+        );
+      
+        return { poiList, poiTotalCount, refetchGetPoiListData };
+      };
+    `}
+  </SyntaxHighlighterWrap>
     
     - queryKey
         
@@ -191,85 +199,93 @@ const getPoiList = async (placeId, spotId, page, pageSize, column, order) => {
         
 **5. `useQuery` 의 `querKey` 를 추가 합니다.**
     
-    ```tsx
-    // hooks/reactquery/poi/useGetPoi.ts
-    const useGetPoiList = (placeId, spotId, page, pageSize, column, order) => {
-      const [poiList, setPoiList] = useState<Array<poiListType>>();
-      const [poiTotalCount, setPoiTotalCount] = useState<number>();
-    
-      const { refetch: refetchGetPoiListData } = useQuery(
-    		[queryKeys.poi.getPoiList, placeId, spotId, page, pageSize, column, order],
-    		apiFunction,
-    		option
-      );
-    
-      return { poiList, poiTotalCount, refetchGetPoiListData };
-    };
-    ```
+  <SyntaxHighlighterWrap language="typescript">
+    {`
+      // hooks/reactquery/poi/useGetPoi.ts
+      const useGetPoiList = (placeId, spotId, page, pageSize, column, order) => {
+        const [poiList, setPoiList] = useState<Array<poiListType>>();
+        const [poiTotalCount, setPoiTotalCount] = useState<number>();
+      
+        const { refetch: refetchGetPoiListData } = useQuery(
+          [queryKeys.poi.getPoiList, placeId, spotId, page, pageSize, column, order],
+          apiFunction,
+          option
+        );
+      
+        return { poiList, poiTotalCount, refetchGetPoiListData };
+      };
+    `}
+  </SyntaxHighlighterWrap>
     
     - `queryKeys.poi.getPoiList` 를 첫번째 queryKey로 추가하고 api에 사용될 인자들을 추가하였습니다. 이렇게 되면, queryKey값이 변경되어 새로운 key일 경우 자동적으로 api를 요청하게 됩니다.
 
 **6. `apiFunction` 을 생성합니다.**
     
-    ```tsx
-    // api/services/poi/poi.ts
+  <SyntaxHighlighterWrap language="typescript">
+    {`    
+      // api/services/poi/poi.ts
     
-    const getPoiList = async (placeId, spotId, page, pageSize, column, order) => {
-      const { data } = await axiosPoi.get(
-        `?page=${page}&size=${pageSize}&column=${column}&order=${order}&place_id=${placeId}&spot_id=${spotId}`,
-      );
-      return data;
-    };
-    ```
+      const getPoiList = async (placeId, spotId, page, pageSize, column, order) => {
+        const { data } = await axiosPoi.get(
+          `+'`?page=${page}&size=${pageSize}&column=${column}&order=${order}&place_id=${placeId}&spot_id=${spotId}`'+`,
+        );
+        return data;
+      };
+    `}
+  </SyntaxHighlighterWrap>
     
     - `api/services/poi/poi.ts` file은 poi API 호출 함수를 관리하는 곳으로 `getPoiList` API 요청 함수를 생성합니다.
 
 **7. `useQuery` 의 `apiFunction` 를 추가합니다.**
     
-    ```tsx
-    // hooks/reactquery/poi/useGetPoi.ts
-    const useGetPoiList = (placeId, spotId, page, pageSize, column, order) => {
-      const [poiList, setPoiList] = useState<Array<poiListType>>();
-      const [poiTotalCount, setPoiTotalCount] = useState<number>();
-    
-      const { refetch: refetchGetPoiListData } = useQuery(
-    		[queryKeys.poi.getPoiList, placeId, spotId, page, pageSize, column, order],
-        () => getPoiList(placeId, spotId, page, pageSize, column, order),
-    		option
-      );
-    
-      return { poiList, poiTotalCount, refetchGetPoiListData };
-    };
-    ```
+  <SyntaxHighlighterWrap language="typescript">
+    {`
+      // hooks/reactquery/poi/useGetPoi.ts
+      const useGetPoiList = (placeId, spotId, page, pageSize, column, order) => {
+        const [poiList, setPoiList] = useState<Array<poiListType>>();
+        const [poiTotalCount, setPoiTotalCount] = useState<number>();
+      
+        const { refetch: refetchGetPoiListData } = useQuery(
+          [queryKeys.poi.getPoiList, placeId, spotId, page, pageSize, column, order],
+          () => getPoiList(placeId, spotId, page, pageSize, column, order),
+          option
+        );
+      
+        return { poiList, poiTotalCount, refetchGetPoiListData };
+      };
+    `}
+  </SyntaxHighlighterWrap>
     
     - 위에서 생성한 `getPoiList`API 요청 함수를 `useQuery` 2번째 인자에 추가합니다.
 
 **8. `useQuery` 의 `option` 을 추가합니다.**
     
-    ```tsx
-    // hooks/reactquery/poi/useGetPoi.ts
-    const useGetPoiList = (placeId, spotId, page, pageSize, column, order) => {
-      const [poiList, setPoiList] = useState<Array<poiListType>>();
-      const [poiTotalCount, setPoiTotalCount] = useState<number>();
-    
-    	// data 재가공 logic
-      const reprocessPoiList = (poiList) => {...};
-    
-      const { refetch: refetchGetPoiListData } = useQuery(
-        [queryKeys.poi.getPoiList, placeId, spotId, page, pageSize, column, order],
-        () => getPoiList(placeId, spotId, page, pageSize, column, order),
-        {
-          onSuccess: (data) => {
-            setPoiList(reprocessPoiList(data.content));
-            setPoiTotalCount(data.total_elements);
+  <SyntaxHighlighterWrap language="typescript">
+    {`
+      // hooks/reactquery/poi/useGetPoi.ts
+      const useGetPoiList = (placeId, spotId, page, pageSize, column, order) => {
+        const [poiList, setPoiList] = useState<Array<poiListType>>();
+        const [poiTotalCount, setPoiTotalCount] = useState<number>();
+      
+        // data 재가공 logic
+        const reprocessPoiList = (poiList) => {...};
+      
+        const { refetch: refetchGetPoiListData } = useQuery(
+          [queryKeys.poi.getPoiList, placeId, spotId, page, pageSize, column, order],
+          () => getPoiList(placeId, spotId, page, pageSize, column, order),
+          {
+            onSuccess: (data) => {
+              setPoiList(reprocessPoiList(data.content));
+              setPoiTotalCount(data.total_elements);
+            },
+            enabled: !!placeId && !!spotId,
           },
-          enabled: !!placeId && !!spotId,
-        },
-      );
-    
-      return { poiList, poiTotalCount, refetchGetPoiListData };
-    };
-    ```
+        );
+      
+        return { poiList, poiTotalCount, refetchGetPoiListData };
+      };
+    `}
+  </SyntaxHighlighterWrap>
     
     - `onSuccess` 라는 option은 API 통신이 error없이 완료되었을 경우 실행시킬 logic이 있을 경우 추가합니다. 저는 poiList와 poiTotalCount라는 2개의 상태값만 필요하기 때문에 API 통신이 완료되면 2개의 상태값을 update하는 set함수를 추가하였습니다.
     - 또한 front에서 사용하는 poiList는 data가공이 필요한 상태여서, `reprcessPoiList` 라는 재가공 함수를 추가하였습니다.
