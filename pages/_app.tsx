@@ -34,7 +34,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <div className="max-w-prose my-8 mx-auto">
         <>
           <h3 className="my-4 mx-auto p-4 hover:cursor-pointer text-2xl font-extrabold tracking-tight text-slate-900 dark:text-slate-200 text-3xl">
-            <Link href="/">WONDER_DEV</Link>
+            <Link href="/">WONDER_DEV_BLOG</Link>
           </h3>
           <div className="max-w-prose prose px-4 my-8">
             {tagButtons.map((tag) => {
