@@ -1,0 +1,90 @@
+---
+title: React-syntax-highlighter > Next.js project 적용
+date: "2022.09.08"
+tag: "개발"
+desc: wonder-dev-blog에 react-syntax-highlighter 적용한 과정의 글입니다.
+---
+## 개요
+
+wonder-dev-blog에 `react-syntax-highlighter` 적용한 과정의 글입니다.
+
+---
+
+## 예제
+
+변경전과 변경후 입니다.
+
+---
+
+## 내용
+
+### 적용 과정
+
+1. `react-syntax-highlighter` 를 설치합니다.
+    
+    <SyntaxHighlighterWrap language="shell">
+    {`npm i react-syntax-highlighter`}
+    </SyntaxHighlighterWrap>
+    
+2. 공통 `highlighter component`를 생성합니다.
+    
+    <SyntaxHighlighterWrap language="typescript">
+    {`    
+    import SyntaxHighlighter from 'react-syntax-highlighter'
+    import {qtcreatorDark} from "react-syntax-highlighter/dist/cjs/styles/hljs";
+    
+    type childrenType = {
+        children: string;
+        language: string;
+    }
+    
+    function SyntaxHighlighterWrap({children, language}:childrenType) {
+        return (
+            <>
+            {<SyntaxHighlighter language={language} style={qtcreatorDark} wrapLongLines>{children}</SyntaxHighlighter>}
+            </>
+        )
+    }
+    
+    export default SyntaxHighlighterWrap;
+    `}
+    </SyntaxHighlighterWrap>
+    
+    - `SyntaxHighlighterWrap` 함수는 mdx에서 공통으로 사용될 `code` tag의 component이며, `children` 과 `language` 로 `code` tag의 내용과 언어를 props로 전달 받습니다.
+    - 저는 많은 style 중에 `qtcreatorDark` style을 선택하여 `SyntaxHighlighter` 의 props로 전달하고 있습니다. 지원되는 option들이 많으니 [공홈](https://github.com/react-syntax-highlighter/react-syntax-highlighter)에서 확인하여 추가하면 됩니다.
+3. `mdx` file에서 `code` tag로 사용하고 있는 부분을 `SyntaxHighlighterWrap` 로 감싸줍니다.
+    
+    <SyntaxHighlighterWrap language="markdown">
+    {`    
+      //변경 전 
+      `+'```shell'+`
+        npm install --save @sentry/react @sentry/tracing
+      `+'```'+`
+      
+      //변경 후
+      <SyntaxHighlighterWrap language="shell">
+        `+'{`npm install --save @sentry/react @sentry/tracing`}'+`
+      </SyntaxHighlighterWrap>
+    `}
+    </SyntaxHighlighterWrap>
+    
+
+---
+
+## 오류
+
+- `SyntaxError: Unexpected token 'export' in Next.js`
+    - 원인 : highlighter style file 경로 문제
+    - 해결 : `react-syntax-highlighter/dist/esm/...` 경로에서 `esm` 이 아닌 `cjs` 로 변경하면 된다.
+    - 검색 키워드 : Unexpected token 'export' in Next.js highlighter
+    - 참고 : [https://stackoverflow.com/questions/73340484/syntaxerror-unexpected-token-export-in-next-js/73347031](https://stackoverflow.com/questions/73340484/syntaxerror-unexpected-token-export-in-next-js/73347031)
+- 백틱 중복
+    - 백틱 중복 정리하자
+
+---
+
+## 참고
+
+- [react-syntax-highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter)
+- [React Syntax Highlighter Demo](https://react-syntax-highlighter.github.io/react-syntax-highlighter/demo/)
+- [ebenezerdon/nextjs-mdx-blog](https://github.com/ebenezerdon/nextjs-mdx-blog)

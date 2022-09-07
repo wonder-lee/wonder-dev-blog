@@ -240,17 +240,19 @@ export const getStaticProps = async ({ params }: any) => {
 
 ## 오류
 
-### **`Typescript - "Cannot find name" errors in React components`**
+- `Typescript - "Cannot find name" errors in React components`**
 
-- 원인 : ts 확장자명 file에서 jsx 문법을 사용할 때 발생하였다.
-- 해결 : 오류가 발생한 file의 확장자명을 tsx로 수정하면 해결된다.
-- 검색 키워드 : **`"Cannot find name" errors in React components`**[Typescript - "Cannot find name" errors in React components](https://stackoverflow.com/questions/51158080/typescript-cannot-find-name-errors-in-react-components)
+  - 원인 : ts 확장자명 file에서 jsx 문법을 사용할 때 발생하였다.
+  - 해결 : 오류가 발생한 file의 확장자명을 tsx로 수정하면 해결된다.
+  - 검색 키워드 : "Cannot find name" errors in React components Typescript - "Cannot find name" errors in React components
+  - 참고 : [https://stackoverflow.com/questions/51158080/typescript-cannot-find-name-errors-in-react-components](https://stackoverflow.com/questions/51158080/typescript-cannot-find-name-errors-in-react-components)
 
-### `Warning: validateDOMNesting(...): <p> cannot appear as a descendant of <p>.`
+- `Warning: validateDOMNesting(...): <p> cannot appear as a descendant of <p>.`
 
-- 원인 : `[slug].tsx` file에서 `mdx` file의 html tag들을 모두 `p` tag에서 처리하고 있었다.
-- 해결 : `mdx` data를 감싸고 있던 `p` tag를 `div` tag로 수정하면 해결된다.
-- 검색 키워드 : `validateDOMNesting mdx`[index.js:1 Warning: validateDOMNesting(...): cannot appear as a descendant of](https://stackoverflow.com/questions/64998116/index-js1-warning-validatedomnesting-ul-cannot-appear-as-a-descendant)
+  - 원인 : `[slug].tsx` file에서 `mdx` file의 html tag들을 모두 `p` tag에서 처리하고 있었다.
+  - 해결 : `mdx` data를 감싸고 있던 `p` tag를 `div` tag로 수정하면 해결된다.
+  - 검색 키워드 : validateDOMNesting mdx index.js:1 Warning: validateDOMNesting(...): cannot appear as a descendant of
+  - 참고 : [https://stackoverflow.com/questions/64998116/index-js1-warning-validatedomnesting-ul-cannot-appear-as-a-descendant](https://stackoverflow.com/questions/64998116/index-js1-warning-validatedomnesting-ul-cannot-appear-as-a-descendant)
 
 ---
 
