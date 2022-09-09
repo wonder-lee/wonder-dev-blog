@@ -12,7 +12,12 @@ wonder-dev-blog에 `react-syntax-highlighter` 적용한 과정의 글입니다.
 
 ## 예제
 
-변경전과 변경후 입니다.
+`react-syntax-highlighter` 적용 전과 후 입니다.
+
+<div>
+    <img width="250px" src="/images/220908-devs-02-02.png" style={{display: 'inline-block'}} />
+    <img width="250px" src="/images/220908-devs-02-01.png" style={{display: 'inline-block'}} />
+</div>
 
 ---
 
@@ -78,9 +83,11 @@ wonder-dev-blog에 `react-syntax-highlighter` 적용한 과정의 글입니다.
     - 해결 : `react-syntax-highlighter/dist/esm/...` 경로에서 `esm` 이 아닌 `cjs` 로 변경하면 된다.
     - 검색 키워드 : Unexpected token 'export' in Next.js highlighter
     - 참고 : [https://stackoverflow.com/questions/73340484/syntaxerror-unexpected-token-export-in-next-js/73347031](https://stackoverflow.com/questions/73340484/syntaxerror-unexpected-token-export-in-next-js/73347031)
-- 백틱 중복
-    - 백틱 중복 정리하자
-
+- backtick 중복
+    - `SyntaxHighlighter`에서 작성된 code tag 내용들은 backtick안에 작성되어있습니다. 그런데 내용 중 backtick을 작성하게 되면 중복이되며, parsing error가 발생합니다.
+      그래서 우선 아래 image처럼 따옴표를 이용하여 문자열로 치환하여 합치는 식으로 번거롭게 작성 중에 있습니다. 이부분은 더 좋은 방법을 생각해볼 필요가 있어보입니다.
+    
+<img width="420px" src="/images/220908-devs-02-03.png" style={{margin:'0 auto'}}/>
 ---
 
 ## 참고
