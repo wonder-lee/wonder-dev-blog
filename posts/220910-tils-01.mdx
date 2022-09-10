@@ -1,0 +1,56 @@
+---
+title: Next.js > mobile에서 project 접근
+date: "2022.09.10"
+tag: "TIL"
+desc: Next.js project를 mobile phone으로 접근하는 방법입니다.
+---
+
+## 개요
+
+Next.js project를 mobile phone으로 접근하는 방법입니다.
+
+---
+
+## 예제
+
+예제 내용은 없습니다.
+
+---
+
+## 내용
+
+### 접근 방법
+
+1. next.js project 실행
+
+   ```bash
+   npm run dev
+   ```
+
+2. mac terminal 이용 ip 확인
+
+   ```bash
+   ipconfig getifaddr en0
+   ```
+
+3. mac network 설정 이용 ip 확인
+
+   - 우측 상단에 있는 wifi icon > 네트워크 환경설정 click
+   - 우측 화면에서 ip를 확인할 수 있습니다.
+     <img width="250px" src="/images/220910-tils-01-01.png" />
+     <img width="250px" src="/images/220910-tils-01-02.png" />
+
+4. mobile에서 실행된 project 접근
+   - mobile에서 web browser를 실행하고 위에서 얻은 내부 ip 주소 + port 번호를 url 주소창에 입력하면 접근이 가능합니다.
+
+---
+
+## 오류
+
+- error message는 아니지만 처음에 시도했을 경우에는 계속 접근이 되지를 않았습니다. 저는 internet에서 `ip 주소 확인` 을 검색하여 ip 확인을 해주는 web에서 제 ip를 확인했는데, 이 ip는 외부 ip여서 접근이 불가능했고, 위 처럼 local에서 사용하는 `내부 ip` 를 이용해야 했습니다.
+
+---
+
+## 참고
+
+- [https://iidaroo.tistory.com/entry/Mac-터미널에서-IP-주소-확인하는-방법](https://iidaroo.tistory.com/entry/Mac-%ED%84%B0%EB%AF%B8%EB%84%90%EC%97%90%EC%84%9C-IP-%EC%A3%BC%EC%86%8C-%ED%99%95%EC%9D%B8%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95)
