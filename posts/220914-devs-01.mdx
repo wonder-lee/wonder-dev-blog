@@ -1,0 +1,422 @@
+---
+title: Design System 적용
+date: "2022.09.14"
+tag: "개발"
+desc: design system 없이 개발되어 있는 project에 design system을 적용한 과정 입니다.
+---
+
+## 개요
+
+design system 없이 개발되어 있는 project에 design system을 적용한 과정 입니다.
+
+---
+
+## 예제
+
+예제 내용은 없습니다.
+
+---
+
+## 내용
+
+### Design System 도입 전 CMS Web 개발 환경
+
+- **Design System이 없었다.**
+  - CMS web의 시안은 designer없이 기획자 Terry가 기능 위주로 figma에 작성하며 개발이 진행되었습니다.
+- **미숙함과 촉박한 launching 으로 잘못 만들었다.**
+  - 실무 투입과 동시에 Alpha version launching 시기가 다가와 급하게 개발하며 일관적이지 않는 atomic한 component들의 style이 증가되고 있었습니다.
+- **추가되거나 변경되는 기획이 많았다.**
+  - 추가되거나 변경되는 기획이 중간중간 생겨나며 또 규칙없는 다른 design을 가진 시안이 생겨나며 비슷하지만 같아질 수 없는? component들이 생겨나고 있었습니다.
+
+결론적으로 CMS는 위 3가지 사항들로 인하여 style과 component 파편화로 재사용 효과가 극적이지 못하며, atom component들을 조합하여 만들어야할 organism component 생성의 어려움들이 존재하고 있었습니다.
+
+<details>
+<summary>도입 전 ButtonStyle의 code</summary>
+
+- color 속성을 받으면 해당 color로 button의 색상을 정해주는 css code
+- handleType 함수를 이용하여 type 속성을 받으면 각 type의 style을 적용해주는 css code
+  - 위 함수를 이용하는 것은 좋았으나, handleType 함수의 switch case구문을 보면 각 type의 css의 일관적이지 않아 제 3자가 처음 봤을 시 `왜 type마다 적용되는 style이 다르지?` 라는 의문을 가지게 될 것 같다.
+- 2가지의 규칙적이지 않고 의문점이 많아보일 css code가 한 곳에 섞여있다.
+- 새로운 혹은 재사용해야할 button이 생긴다면 이 곳을 썩 이용하고 싶지 않게 alpha launching 시기에 정신없이 짜버렸다.
+
+```tsx
+const ButtonStyle = styled(Button)`
+  ${({ theme, color, type }) => {
+    const { colors } = theme;
+
+    return css`
+      ${handleType(type, colors)};
+
+      margin-left: 10px;
+
+      ${color &&
+      css`
+        border-color: ${color};
+        background-color: ${color};
+
+        &:hover,
+        &:focus,
+        &:active {
+          border-color: ${color};
+          background-color: ${color};
+        }
+      `}
+      &.ant-btn-lg {
+        min-width: 200px;
+      }
+    `;
+  }}
+`;
+
+const handleType = (type, colors) => {
+  switch (type) {
+    case "primary":
+      return css`
+        font-size: 16px;
+      `;
+    case "secondary":
+      return css`
+        font-size: 16px;
+        height: 40px;
+        color: white;
+        background-color: ${colors.green.default};
+        border-color: ${colors.green.default};
+
+        &.ant-btn:hover,
+        &.ant-btn:focus {
+          border-color: ${colors.green.light};
+          background-color: ${colors.green.light};
+          color: white;
+        }
+      `;
+    case "dashed":
+      return css`
+        background-color: ${colors.gray.light};
+        border: 1px dashed ${colors.gray.default};
+      `;
+
+    case "text":
+      return css`
+        display: flex;
+
+        &:hover,
+        &:focus,
+        &:active {
+          text-decoration: none;
+          border-color: unset;
+          border: none;
+          color: unset;
+          background-color: unset;
+          background: unset;
+        }
+
+        border: none;
+        color: unset;
+      `;
+    default:
+      break;
+  }
+};
+```
+
+  </details>
+
+### 작성된 Design System
+
+<details>
+  <summary>사용될 text font, color를 목록화한 style guide</summary>
+  <img width="500px" src="/images/220914-devs-01-01.png" />
+</details>
+<details>
+  <summary>기능적인 용도로 목록화한 pattern library</summary>
+  <img width="500px" src="/images/220914-devs-01-02.png" />
+</details>
+<details>
+  <summary>CMS 내 적용될 page</summary>
+  <img height="800px" src="/images/220914-devs-01-03.png" />
+</details>
+위 3가지 사항을 designer bonnie가 잘 만들어주셨고, 해당 사항들을 종합하여 frontend가
+해야할 대략적인 작업은 아래와 같습니다.
+
+- style guide를 참고하여 theme color 설정
+- pattern library를 참고하여 antd custom component style 변경
+- 변경된 component 적용 상태 확인, 필요 수정사항 적용
+
+### Button Design System 적용 과정
+
+<img width="500px" src="/images/220914-devs-01-04.png" />
+button의 pattern library는 위와 같습니다.
+
+전체 button의 style은 `color` , `action` , `size` 3가지 속성으로 조합되어 있습니다. 3가지 속성들 안에 어떤 것들이 포함되었는지를 보시면 왜 3가지로 조합되어 있는지를 알 수 있습니다.
+
+<img width="500px" src="/images/220914-devs-01-05.png" />
+
+- `color(4)` : primary, secondary, basic, alert
+- `action(4)` : default, hover, pressed, disabled
+- `size(4)`: small, medium, large, default
+
+하지만 3가지 속성으로 나누어서 style을 작성한다면 12가지의 css code로 분리되니 저는 `color` 와 `action` 을 하나의 `type` 속성으로 묶고, `size` 속성을 따로 분리하여 css code로 작성하였습니다.
+
+그리하여, button component를 재사용할 경우 props로 type, size의 오직 2가지 정보만 넘겨주면 위의 button style의 pattern library를 모두 적용할 수 있게 되었습니다.
+
+더 간략하고 올바른 방법이 있을 것 같다고 생각이 들지만 현재까지 개선된 button의 style code는 아래와 같습니다.
+
+```tsx
+import styled, { css } from "styled-components";
+import { Button } from "antd";
+
+const ButtonStyle = styled(Button)`
+  ${({ theme, type, size }) => {
+    const { colors } = theme;
+
+    return css`
+      // button의 공통 css
+      border-radius: 2px;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+
+      // 인자로 받은 type별로 해당 style css return하는 함수
+      ${handleType(type, colors)};
+      // 인자로 받은 size별로 해당 style css return하는 함수
+      ${handleSize(size)}
+    `;
+  }}
+`;
+
+const handleType = (type, colors) => {
+  switch (type) {
+    case "primary":
+      return css`
+        background-color: ${colors.primary.default};
+        border-color: ${colors.primary.default};
+
+        &:hover {
+          background-color: ${colors.primary.low};
+          border-color: ${colors.primary.low};
+        }
+
+        &:active {
+          background-color: ${colors.primary.dark};
+          border-color: ${colors.primary.dark};
+        }
+
+        &:focus {
+          background-color: ${colors.primary.default};
+          border-color: ${colors.primary.default};
+        }
+
+        &:disabled {
+          background-color: ${colors.primary.disabled};
+          border-color: ${colors.primary.disabled};
+        }
+      `;
+    case "secondary":
+      return css`...`;
+    case "basic":
+      return css`...`;
+    case "alert":
+      return css`...`;
+    default:
+      break;
+  }
+};
+
+const handleSize = (size) => {
+  switch (size) {
+    case "large":
+      return css`
+        height: 38px;
+        font-size: 14px;
+        padding: 20px 24px;
+      `;
+    case "medium":
+      return css`...`;
+    case "small":
+      return css`...`;
+    default:
+      return css`...`;
+  }
+};
+
+export { ButtonStyle };
+```
+
+<details>
+  <summary>원본 code</summary>
+
+```tsx
+const ButtonStyle = styled(Button)`
+  ${({ theme, type, size }) => {
+    const { colors } = theme;
+
+    return css`
+      border-radius: 2px;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+
+      ${handleType(type, colors)};
+      ${handleSize(size)};
+    `;
+  }}
+`;
+
+const handleType = (type, colors) => {
+  switch (type) {
+    case "primary":
+      return css`
+        background-color: ${colors.primary.default};
+        border-color: ${colors.primary.default};
+
+        &:hover {
+          background-color: ${colors.primary.low};
+          border-color: ${colors.primary.low};
+        }
+
+        &:active {
+          background-color: ${colors.primary.dark};
+          border-color: ${colors.primary.dark};
+        }
+
+        &:focus {
+          background-color: ${colors.primary.default};
+          border-color: ${colors.primary.default};
+        }
+
+        &:disabled {
+          background-color: ${colors.primary.disabled};
+          border-color: ${colors.primary.disabled};
+        }
+      `;
+    case "secondary":
+      return css`
+        background-color: ${colors.primary.default};
+        border: 1px solid ${colors.primary.default};
+
+        &:hover {
+          color: ${colors.primary.low};
+          border: 1px solid ${colors.primary.low};
+        }
+
+        &:active {
+          color: ${colors.primary.dark};
+          border: 1px solid ${colors.primary.dark};
+        }
+
+        &:focus {
+          color: ${colors.gray.dark};
+          border: 1px solid ${colors.gray.dark};
+        }
+
+        &:disabled {
+          color: ${colors.gray.low};
+          background-color: ${colors.gray.low};
+          border-color: ${colors.gray.low};
+        }
+      `;
+    case "basic":
+      return css`
+        color: ${colors.gray.dark};
+        background-color: ${colors.white};
+        border: 1px solid ${colors.gray.dark};
+
+        &:hover {
+          color: ${colors.gray.mid};
+          border: 1px solid ${colors.gray.mid};
+        }
+
+        &:active {
+          color: ${colors.gray.darker};
+          border: 1px solid ${colors.gray.darker};
+        }
+
+        &:focus {
+          color: ${colors.gray.dark};
+          border: 1px solid ${colors.gray.dark};
+        }
+
+        &:disabled {
+          color: ${colors.gray.low};
+          border: 1px solid ${colors.gray.low};
+        }
+      `;
+    case "alert":
+      return css`
+        color: ${colors.white};
+        background-color: ${colors.alert.default};
+        border-color: unset;
+
+        &:hover {
+          color: ${colors.white};
+          background-color: ${colors.alert.dark};
+          border-color: unset;
+        }
+
+        &:active,
+        &:focus {
+          color: ${colors.white};
+          background-color: ${colors.alert.default};
+          border-color: unset;
+        }
+      `;
+    default:
+      break;
+  }
+};
+
+const handleSize = (size) => {
+  switch (size) {
+    case "large":
+      return css`
+        height: 38px;
+        font-size: 14px;
+        padding: 20px 24px;
+      `;
+    case "medium":
+      return css`
+        width: 110px;
+        height: 38px;
+        font-size: 14px;
+        padding: 20px 24px;
+      `;
+    case "small":
+      return css`
+        width: 96px;
+        height: 32px;
+        font-size: 14px;
+        padding: 16px 20px;
+      `;
+    case "smallWide":
+      return css`
+        width: 110px;
+        height: 32px;
+        font-size: 14px;
+        padding: 16px 20px;
+      `;
+    default:
+      return css`
+        width: 160px;
+        height: 38px;
+        font-size: 14px;
+        padding: 20px 24px;
+      `;
+  }
+};
+
+export { ButtonStyle };
+```
+
+</details>
+
+## 오류
+
+오류 내용은 없습니다.
+
+---
+
+## 참고
+
+참고 내용은 없습니다.

@@ -18,7 +18,7 @@ export default function Home({ posts }: any) {
     } else {
       setReprocessPosts(posts);
     }
-  }, [router]);
+  }, [posts, router]);
 
   return (
     <div className="max-w-prose prose px-4">
