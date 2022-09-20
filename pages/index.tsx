@@ -1,52 +1,19 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import Head from "next/head";
+import PostTableContainer from "../src/postTable";
 import getPosts from "../utils/getPosts";
-import PostList from "../components/postList";
 
 export default function Home({ posts }: any) {
-  const router = useRouter();
-  const [reprocessPosts, setReprocessPosts] = useState([]);
-
-  useEffect(() => {
-    const { tag } = router.query;
-
-    if (!!tag) {
-      const hasTagPosts = posts.filter((post: any) => {
-        return post.slug.indexOf(tag) > -1;
-      });
-      setReprocessPosts(hasTagPosts);
-    } else {
-      setReprocessPosts(posts);
-    }
-  }, [posts, router]);
-
   return (
-    <div className="max-w-prose prose px-4">
-      <table className="inline-table w-full">
-        <thead className="text-slate-700 text-left">
-          <tr>
-            <th>no</th>
-            <th>title</th>
-            <th>tag</th>
-            <th>date</th>
-          </tr>
-        </thead>
-        <tbody className="text-slate-500">
-          {reprocessPosts.map((post: any, index: number) => (
-            <PostList
-              key={post.slug}
-              title={post.data.title}
-              date={post.data.date}
-              tag={post.data.tag}
-              description={post.data.description}
-              slug={post.slug}
-              index={index}
-              length={reprocessPosts.length}
-            />
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <Head>
+        <meta
+          name="description"
+          content="이상한 나라의 개발자 WONDER LEE의 블로그 입니다. "
+        />
+        <title>wonder-dev-blog</title>
+      </Head>
+      <PostTableContainer posts={posts} />
+    </>
   );
 }
 

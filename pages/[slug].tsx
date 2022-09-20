@@ -3,11 +3,10 @@ import getPost from "../utils/getPost";
 import getPosts from "../utils/getPosts";
 import { MDXRemote } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
-import SyntaxHighlighterWrap from "../components/syntaxHighlighter";
-
+import SyntaxHighlighterWrap from "../components/common/syntaxHighlighter";
 
 function Post({ data, content }: any) {
-  const components = {SyntaxHighlighterWrap};
+  const components = { SyntaxHighlighterWrap };
   return (
     <>
       <Head>
@@ -21,7 +20,7 @@ function Post({ data, content }: any) {
         </h3>
       </div>
       <div className="prose my-8 px-4 text-sm">
-        <MDXRemote {...content} components={components}/>
+        <MDXRemote {...content} components={components} />
       </div>
     </>
   );

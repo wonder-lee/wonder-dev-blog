@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-function PostList({ title, date, tag, slug, index, length }: any) {
+const PostTableRow = ({ title, date, tag, slug, index, length }: any) => {
   return (
     <Link href="/[slug]" as={`/${slug}`}>
       <tr className="text-sm hover:cursor-pointer hover:bg-slate-50">
@@ -11,6 +11,6 @@ function PostList({ title, date, tag, slug, index, length }: any) {
       </tr>
     </Link>
   );
-}
+};
 
-export default PostList;
+export default PostTableRow;
