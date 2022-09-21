@@ -1,0 +1,77 @@
+---
+title: TradingView와 Discord 연동
+date: "2022.09.21"
+tag: "개발"
+desc: TradingView에서 적용시킨 전략에 매수, 매도 지점이 왔을 경우 DIscord channel로 message 보내는 방법입니다.
+---
+
+## 개요
+
+TradingView에서 적용시킨 전략에 매수, 매도 지점이 왔을 경우 DIscord channel로 message 보내는 방법입니다.
+
+---
+
+## 예제
+
+<img src="/images/220921-devs-01-01.gif" />
+
+---
+
+## 내용
+
+### Discord web hook url 가져오기
+
+1. Discord의 자신의 server를 생성합니다.
+2. channel 편집 > 연동 > webhook 만들기
+3. webhook 주소를 복사하여 저장합니다.
+
+### TradingView 설정하기
+
+1. TradingView 공식 homepage에서 가입 및 유료결제를 진행합니다.
+   1. 현재는 유료결제만 alert 기능을 활용할 수 있습니다.
+2. TradingView > product > chart page로 들어옵니다.
+3. 하단에 `Pine 에디터` tab을 눌러 pineScript editor를 열어봅니다.
+4. Test로 아래 code를 입력해 봅니다.
+
+<SyntaxHighlighterWrap language="javascript">
+   {`// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+   // © combies
+
+//@version=5
+indicator("DiscordTest", overlay = true)
+
+exchange = syminfo.prefix
+ticker = syminfo.ticker
+
+if close > open
+alert('{"username":"콤비즈 바이탈 모니터",' + str.format('"content": "거래소 : {0} / 코인 : {1}, 현재가 : {2} / 양봉 test"}', exchange, ticker, close))
+else
+alert('{"username":"콤비즈 바이탈 모니터",' + str.format('"content": "거래소 : {0} / 코인 : {1}, 현재가 : {2} / 음봉 test"}', exchange, ticker, close))`}
+
+</SyntaxHighlighterWrap>
+
+5. PineScript를 저장하고, Editor 우측 상단에 `차트에 넣기` 를 눌러봅니다.
+   1. `차트에 넣기` 를 누르면 상단에 있는 Chart 화면에 code의 indicator가 추가된 모습을 볼 수 있습니다.
+6. 화면 가장 우측에 있는 menu 중 시계모양의 `Alert` icon을 눌러봅니다.
+   1. `얼러트 만들기` 라는 시계모양에 plus icon이 있는 icon을 누릅니다.
+   2. 조건에서 생성한 indicator의 이름을 누릅니다.
+   3. `얼러트 액션` 에서는 `웹훅 URL` 을 선택하여 위에서 생성한 Discord webhook url을 추가합니다.
+   4. 마지막으로 만들기 button을 눌러 생성을 합니다.
+7. 기다리면, Discord에서 message가 올라오는 것을 볼 수 있습니다.
+
+### 참고사항
+
+- chart에서 설정된 초, 분, 시간, 일 봉의 시간으로 Discord로 message를 보내게 됩니다.
+- `Pine 에디터` 에서 logic을 수정하면 기존 alert를 제거하고 새롭게 추가해야 합니다.
+
+---
+
+## 오류
+
+오류 내용 입니다.
+
+---
+
+## 참고
+
+- [트레이딩뷰에서 디스코드로 알람 받는 법! - 파인스크립트](https://www.youtube.com/watch?v=i5XUh-pgqQg)
