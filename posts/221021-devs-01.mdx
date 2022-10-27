@@ -1,0 +1,138 @@
+---
+title: Solidity > Crypto Zombie > lesson 1
+date: "2022.10.16"
+tag: "개발"
+desc: solidity 학습이 가능한 crypto zomibe site에서 lesson 1의 내용을 간략히 정리하였습니다.
+---
+
+## 개요
+
+solidity 학습이 가능한 [crypto zomibe](https://cryptozombies.io/ko/) site에서 lesson 2의 내용을 간략히 정리하였습니다.
+
+---
+
+## 예제
+
+예제입니다.
+
+---
+
+## 내용
+
+### mapping
+
+- `mapping` 은 js의 object와 같은 data 형태입니다.
+- `mapping` 역시 `public` , `private` 설정도 가능합니다.
+
+```solidity
+// 금융 앱용으로, 유저의 계좌 잔액을 보유하는 uint를 저장한다:
+mapping (address => uint) public accountBalance;
+// 혹은 userID로 유저 이름을 저장/검색하는 데 매핑을 쓸 수도 있다
+mapping (uint => string) userIdToName;
+```
+
+### \***\*msg.sender\*\***
+
+- 현재 contract 함수를 호출한 사람의 주소 전역변수입니다.
+
+### require
+
+- if 구문 처럼 비교 구문을 할 때 사용하는 함수입니다.
+- solidity는 고유의 string 비교 기능을 가지고 있지 않아, keccak256 hash값을 비교하여 판단합니다.
+
+```solidity
+require(keccak256(_name) == keccak256("Vitalik"));
+```
+
+### 상속
+
+- 상속으로 연결된 contract들은 public 함수에 서로 접근할 수 있습니다.
+- 부분 집합 class가 있을 때 논리적 상속을 위해 사용할 수 있습니다.
+- 동일한 로직을 다수의 class로 분할해서 단순히 코드를 정리할 때도 활용할 수 있습니다.
+
+```solidity
+contract Doge {
+  function catchphrase() public returns (string) {
+    return "So Wow CryptoDoge";
+  }
+}
+
+contract BabyDoge is Doge {
+  function anotherCatchphrase() public returns (string) {
+    return "Such Moon BabyDoge";
+  }
+}
+```
+
+### import
+
+- 파일 별로 분리하여 `import` 구문을 통해 불러올 수 있습니다.
+
+```tsx
+import "./someothercontract.sol";
+
+contract newContract is SomeOtherContract {
+
+}
+```
+
+### storage, memory
+
+- storage : 블록체인에 영구적으로 저장되는 변수
+- memory : 임시적으로 저장되는 변수 → storage에 저장된 변수를 영향을 주지 않고 복사할 때도 쓰인다.
+
+### i\***\*nternal, external\*\***
+
+- internal : 함수가 정의된 컨트랙트를 상속하는 컨트랙트에서도 접근이 가능합니다. 이 점만 제외하면 private랑 똑같습니다.
+- external : 함수가 컨트랙트 바깥에서만 호출될 수 있고 컨트랙트 내 다른 함수에 의해 호출될 수 없습니다. 이 점만 제외하면 public이랑 똑같습니다.
+
+### interface
+
+- 블록체인 상에 있으면서 우리가 소유하지 않은 컨트랙트와 우리 컨트랙트가 상호작용을 하려면 먼저 인터페이스를 정의해야 합니다.
+- interface 정의법 contract 새로 정의하는 거랑 비슷합니다.
+
+```solidity
+//다른 컨트렉트
+
+contract LuckyNumber {
+  mapping(address => uint) numbers;
+
+  function setNum(uint _num) public {
+    numbers[msg.sender] = _num;
+  }
+
+  function getNum(address _myAddress) public view returns (uint) {
+    return numbers[_myAddress];
+  }
+}
+
+// 우리 컨트랙트
+contract NumberInterface {
+  function getNum(address _myAddress) public view returns (uint);
+}
+
+contract MyContract {
+  address NumberInterfaceAddress = 0xab38...
+  // ^ 이더리움상의 FavoriteNumber 컨트랙트 주소이다
+  NumberInterface numberContract = NumberInterface(NumberInterfaceAddress)
+  // 이제 `numberContract`는 다른 컨트랙트를 가리키고 있다.
+
+  function someFunction() public {
+    // 이제 `numberContract`가 가리키고 있는 컨트랙트에서 `getNum` 함수를 호출할 수 있다:
+    uint num = numberContract.getNum(msg.sender);
+    // ...그리고 여기서 `num`으로 무언가를 할 수 있다
+  }
+}
+```
+
+---
+
+## 오류
+
+오류 내용 입니다.
+
+---
+
+## 참고
+
+참고내용입니다.
