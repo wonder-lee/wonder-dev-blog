@@ -1,0 +1,107 @@
+---
+title: Youtube > Data API > 간편 분석 서비스 > 3 (초안)
+date: "2022.11.03"
+tag: "개발"
+desc: youtube data 분석 service 개발 과정입니다.
+---
+
+## 개요
+
+youtube data 분석 service 개발 과정입니다.
+
+---
+
+## 예제
+
+---
+
+## 내용
+
+### Service 목적
+
+- youtube > 특정 검색어 검색
+- 영상 결과 값 중 아래 조건을 필터
+  - 50000 > 영상 channel 구독자 수
+  - 영상 조회수 > 영상 channel 구독자 수
+
+### Youtube Open Api 이용
+
+- youtube open api로 충분히 개발할 수 있지만 우선 API 할당량으로 해당 방법은 중지하였고, 1편에서 정리하였습니다.
+
+### Youtube API 이용
+
+- 필요한 youtube Data들을 수집할 수 있는 API들을 2편에서 정리하였습니다.
+
+### AWS lambda 설정
+
+- 쉽지는 않았지만 2개의 좋은 자료를 통해 환경설정을 완료하였다.
+
+### 응답 데이터 최적화
+
+- 초기
+  1. 검색어 영상 API 조회
+  2. 검색어 영상 pagination API 이용 모든 영상 정보 수집
+  3. 조회한 모든 영상의 구독자 API 조회
+  4. 구독자수 5000명 이하 인 영상 목록 생성
+- 최적화
+  1. 검색어 영상 API 조회
+     1. totalCount 500만 이상이면 throw exception
+  2. 검색어 영상 pagination API 이용 모든 영상 정보 수집
+     1. 조회수 높은 순으로 조회 요청
+     2. 조회수 500이상만 수집
+  3. 조회한 모든 영상의 구독자 API 조회
+  4. 구독자수 5000명 이하 인 영상 목록 생성
+- 1번과 2번에서 너무 방대한 data가 들어오고 있었고 저 부분에서 data양을 줄여야할 필요가 있었다. 우선 모든 API 요청 전 totalcount가 500만 이상이면 우선 검색어 범위를 좁혀달라는 error 발생시켰다.
+- 그리고 totalCount가 500만 이하일 경우에만 모든 API를 요청하는 것으로 수정하였다.
+- 그리고 조회수 높은 순으로 정렬 조회를 요청하고 조회수가 500이상일 때까지만 반복문을 돌려 API요청하고 500이하일 경우 break로 수집을 멈추었다.
+
+---
+
+## 오류
+
+- lambda timeout error
+
+  - API 요청량이 많아 timeout error가 발생하였습니다. aws lambda 구성에서 제한시간에 기본값 6초로 되어있던 부분을 14분으로 변경하였습니다. 하지만 local에서 test에서는 여전히 6초로 제한되었고, 확인한 결과 `serverless.yml` file에서 provider > timeout 설정을 하자 local에서도 tiemout error가 해결되었습니다.
+
+    ```yaml
+    service: to-thousand
+
+    provider:
+      name: aws
+      runtime: nodejs12.x
+      stage: dev
+      region: ap-northeast-2
+      timeout: 600
+
+    functions:
+      recommendationList:
+        handler: handler.recommendationList
+        events:
+          - http:
+              path: recommendationList
+              method: post
+
+    plugins:
+      - serverless-offline
+    ```
+
+- SyntaxError: Unexpected token '.'
+  - local에서는 문제 없이 실행되지만, server에 배포 후에 api 요청 시에만 계속 cloudwatch에 위와 같은 error가 계속 발생했다.
+  - code상의 문제라면 응당 local에서 발생해야 했는데, server endpoint에서만 발생했다.
+  - 결론은 Node versiondl 12였는데, 16으로 올리니 해결되었다.
+    [SyntaxError: Unexpected token '?' on sls deploy · Discussion #11225 · serverless/serverless](https://github.com/serverless/serverless/discussions/11225)
+- CORS error
+  - AWS API gateway 헤더설정후 배포 완료
+- 무한 대기 배포 error
+  - [https://github.com/nextui-org/nextui/issues/848](https://github.com/nextui-org/nextui/issues/848)
+- api gateway 504 error
+  - https://github.com/serverless/serverless/issues/3171
+  - 람다쪼개기 → 요청량이 배로 증가하여 비용 증가..이거 피할려고 일부러 1개 람다로 한건데…
+
+---
+
+## 참고
+
+- [Serverless 프레임워크로 서버리스 애플리케이션 생성 및 배포하기](https://velopert.com/3549)
+- [Setup AWS Serverless Project with Typescript Lambda Functions](https://www.youtube.com/watch?v=ktTPCJx7F1Q)
+- [AWS Config 규칙의 AWS Lambda 함수 예제(Node.js)](https://docs.aws.amazon.com/ko_kr/config/latest/developerguide/evaluate-config_develop-rules_nodejs-sample.html)
