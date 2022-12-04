@@ -1,0 +1,65 @@
+---
+title: CSR, SSR
+date: "2022.12.04"
+tag: "개발"
+desc: CSR과 SSR의 개념을 정리하였습니다.
+---
+
+## 개요
+
+CSR과 SSR의 개념을 정리하였습니다.
+
+---
+
+## 예제
+
+예제는 없습니다.
+
+---
+
+## 내용
+
+### CSR
+
+CSR(Client Side Rendering)으로 말 그대로 사용자 영역에서 page의 detail한 내용들이 그려지는 방식을 말 합니다.
+
+그렇기 때문에 React로 만들어진 CSR web page에서 `페이지 소스 보기` 기능을 실행하여 code들을 확인해보면 아래처럼 body tag안에 div, script tag 2개가 존재하는 code를 볼 수 있습니다.
+
+아래 참고 이미지는 Wordle page의 react clone site 입니다. 오른쪽 화면은 해당 page source이며, body tag안에는 단순히 id가 root인 div tag만 존재하는 것을 확인 할 수 있습니다.
+
+<img src="/images/221204-devs-01-01.png" style={{ display: "inline-block" }} />
+
+위 처럼 오른쪽 source code를 server에서 client에게 전해주기 때문에 처음 page에 진입할 경우 비어있는 하얀 화면을 보게 되어집니다. 그 뒤 link되어 있는 `app.js` 를 server로 부터 download 받게 됩니다. 이 `app.js` 필요한 framework, library, logic들이 포함이 되어져 있습니다. 그렇기 때문에 초기 진입 시에는 시간이 file 크기에 따라 오래 걸리기도 합니다.
+
+### 장점과 단점
+
+- **첫 화면이 느립니다.** → app 실행에 필요한 `app.js` file을 처음에 download 해야하기 때문에 처음에는 느리다.
+- **SEO에 취약합니다.** → 비어있는 `index.html` file로 인하여 SEO(Search Engine Optimization) 분석이 어렵다.
+- TTV, TTI가 동시에 가능합니다.
+
+### SSR
+
+SSR(Server Side Rendering)으로 말 그대로 server 영역에서 page의 detail한 내용들을 그려서 사용자에게 전달해주는 방식을 말 합니다.
+
+그렇기 때문에 당연히 `페이지 소스 보기` 기능을 통하여 code를 확인하면 화면에 그려진 내용들을 확인 할 수 있습니다.
+
+예전 Static Sites처럼 server에서 필요한 data를 모두 가져와서 HTML file을 만들게 되고, 동적으로 제어할 수 있는 js code와 함께 client에게 전달하게 됩니다.
+
+### 장점과 단점
+
+- 첫 화면이 빠르다.
+- SEO가 효과적이다.
+- page 이동시 깜빡거린다.
+- TTV가 가능한 시점에서 TTI가 불가능합니다. (js file을 download한 후 부터 TTI가 가능합니다.)
+
+---
+
+## 오류
+
+오류 내용은 없습니다.
+
+---
+
+## 참고
+
+- [서버사이드 렌더링](https://www.youtube.com/watch?v=iZ9csAfU5Os) / 드림코딩
